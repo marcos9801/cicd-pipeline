@@ -4,7 +4,10 @@ pipeline{
             image 'docker:latest'
         }
     }
-    tools {nodejs "node"}
+    tools {
+            nodejs "node"
+            docker 'docker-20.10.7'
+    }
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
         IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"
