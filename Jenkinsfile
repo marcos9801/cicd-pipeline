@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    CONTAINER_ID=$(docker ps -q --filter "ancestor=${env.IMAGE_TAG}")
+                    CONTAINER_ID=\$(docker ps -q --filter "ancestor=${env.IMAGE_TAG}")
                     if [ ! -z "$CONTAINER_ID" ]; then
                         docker stop $CONTAINER_ID
                         docker rm $CONTAINER_ID
