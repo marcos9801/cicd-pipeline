@@ -12,11 +12,10 @@ pipeline {
         stage('Set Environment Variables') {
             steps {
                 script {
-                    // Configurar variables basadas en la rama
                     if (env.BRANCH_NAME != 'main') {
-                        echo "yesiiiiiiiiiiiiii"
-                        IMAGE_TAG = "nodedev:v1.0"
-                        PORT = "3001"
+                        echo "Changing environment variables for branch: ${env.BRANCH_NAME}"
+                        env.IMAGE_TAG = "nodedev:v1.0"
+                        env.PORT = "3001"
                     }
                 }
             }
@@ -52,13 +51,13 @@ pipeline {
                     else
                         echo "No containers to stop for image ${env.IMAGE_TAG}"
                     fi
-                """
+                    """
                 }
             }
         }
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d -p ${env.PORT}:3000 --name my-app ${env.IMAGE_TAG}"
+                sh "docker run -d -p ${env.PORT}:3000 ${env.IMAGE_TAG}"
             }
         }
     }
