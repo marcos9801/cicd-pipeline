@@ -5,21 +5,10 @@ pipeline {
     }
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"  // Nombre de la rama del SCM
-        IMAGE_TAG = "nodemain:v1.0"  // Imagen por defecto
-        PORT = "3000"  // Puerto por defecto
+        IMAGE_TAG = "${params.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"  // Imagen por defecto
+        PORT = "${params.BRANCH == 'main' ? '3000' : '3001'}" // Puerto por defecto
     }
     stages {
-        stage('Set Environment Variables') {
-            steps {
-                script {
-                    // Configurar variables basadas en la rama
-                    if (env.BRANCH_NAME != 'main') {
-                        env.IMAGE_TAG = "nodedev:v1.0"
-                        env.PORT = "3001"
-                    }
-                }
-            }
-        }
         stage('Checkout') {
             steps {
                 checkout scm
