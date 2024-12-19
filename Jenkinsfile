@@ -5,8 +5,8 @@ pipeline {
     }
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"  // Nombre de la rama del SCM
-        IMAGE_TAG = "nodemain:v1.0"  // Imagen por defecto
-        PORT = "3000"  // Puerto por defecto
+        IMAGE_TAG = "nodedev:v1.0"  // Imagen por defecto
+        PORT = "3001"  // Puerto por defecto
     }
     stages {
         stage('Set Environment Variables') {
