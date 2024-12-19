@@ -5,6 +5,7 @@ pipeline{
     }
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
+        DOCKER_IMAGE=""
         IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"
         PORT = "${env.BRANCH_NAME == 'main' ? '3000' : '3001'}"
     }
@@ -27,7 +28,7 @@ pipeline{
         stage('Build image'){
             steps{
                 script{
-                    docker.build "${IMAGE_TAG}"
+                    DOCKER_IMAGE=docker.build "${IMAGE_TAG}"
                 }
             }
         }
