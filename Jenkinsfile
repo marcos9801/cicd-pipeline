@@ -14,8 +14,9 @@ pipeline {
                 script {
                     // Configurar variables basadas en la rama
                     if (env.BRANCH_NAME != 'main') {
-                        env.IMAGE_TAG = "nodedev:v1.0"
-                        env.PORT = "3001"
+                        echo "yesiiiiiiiiiiiiii"
+                        IMAGE_TAG = "nodedev:v1.0"
+                        PORT = "3001"
                     }
                 }
             }
