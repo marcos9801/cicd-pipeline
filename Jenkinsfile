@@ -1,44 +1,64 @@
-pipeline{
+pipeline {
     agent any
-    tools {nodejs "nodejs"}
-    environment {
-        BRANCH_NAME = "${env.BRANCH_NAME}"
-        IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"
-        PORT = "${env.BRANCH_NAME == 'main' ? '3000' : '3001'}"
+    tools {
+        nodejs "node"  // Nombre del Node.js configurado en Jenkins
     }
-    stages{
-        stage('Checkout'){
-            steps{
+    environment {
+        BRANCH_NAME = "${env.BRANCH_NAME}"  // Nombre de la rama del SCM
+        IMAGE_TAG = "nodemain:v1.0"  // Imagen por defecto
+        PORT = "3000"  // Puerto por defecto
+    }
+    stages {
+        stage('Set Environment Variables') {
+            steps {
+                script {
+                    // Configurar variables basadas en la rama
+                    if (env.BRANCH_NAME != 'main') {
+                        env.IMAGE_TAG = "nodedev:v1.0"
+                        env.PORT = "3001"
+                    }
+                }
+            }
+        }
+        stage('Checkout') {
+            steps {
                 checkout scm
             }
         }
-        stage('Install dependencies'){
-            steps{
+        stage('Install dependencies') {
+            steps {
                 sh 'npm install'
             }
         }
-        stage("run tests") {
-            steps{
+        stage('Run Tests') {
+            steps {
                 sh 'npm test'
             }
         }
-        stage('Build image'){
-            steps{
-                sh " docker build -t ${IMAGE_TAG} ."
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t ${env.IMAGE_TAG} ."
             }
         }
-        stage ('stop previous container'){
-            steps{
-                sh """
-                    docker ps -q --filter "ancestor=${IMAGE_TAG}" | xargs -r docker stop
-                    docker ps -aq --filter "ancestor=${IMAGE_TAG}" | xargs -r docker rm
+        stage('Stop Previous Container') {
+            steps {
+                script {
+                    sh """
+                    CONTAINER_ID=\$(docker ps -q --filter "ancestor=${env.IMAGE_TAG}")
+                    if [ ! -z "\$CONTAINER_ID" ]; then
+                        docker stop \$CONTAINER_ID
+                        docker rm \$CONTAINER_ID
+                    else
+                        echo "No containers to stop for image ${env.IMAGE_TAG}"
+                    fi
                 """
+                }
             }
         }
-        stage ('Run container'){
-            steps{
-                sh "docker run -d -p ${PORT}:3000 ${IMAGE_TAG}"
+        stage('Run Docker Container') {
+            steps {
+                sh "docker run -d -p ${env.PORT}:3000 --name my-app ${env.IMAGE_TAG}"
             }
         }
-    }    
+    }
 }
