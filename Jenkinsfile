@@ -4,25 +4,14 @@ pipeline {
         nodejs "node"  // Nombre del Node.js configurado en Jenkins
     }
     environment {
-        BRANCH_NAME = "${env.BRANCH_NAME}"  // Nombre de la rama del SCM
-        IMAGE_TAG = "nodedev:v1.0"  // Imagen por defecto
-        PORT = "3001"  // Puerto por defecto
+        CONTAINER_NAME="${env.BRANCH_NAME == 'main' ? 'nodemain' : 'nodedev'}" 
+        IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"  // Imagen por defecto
+        PORT = "${env.BRANCH_NAME == 'main' ? '3000' : '3001'}" // Puerto por defecto
     }
     stages {
-        stage('Set Environment Variables') {
-            steps {
-                script {
-                    if (env.BRANCH_NAME != 'main') {
-                        echo "Changing environment variables for branch: ${env.BRANCH_NAME}"
-                        env.IMAGE_TAG = "nodedev:v1.0"
-                        env.PORT = "3001"
-                    }
-                }
-            }
-        }
         stage('Checkout') {
             steps {
-                checkout scm 
+                checkout scm
             }
         }
         stage('Install dependencies') {
@@ -51,13 +40,13 @@ pipeline {
                     else
                         echo "No containers to stop for image ${env.IMAGE_TAG}"
                     fi
-                    """
+                """
                 }
             }
         }
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d -p ${env.PORT}:3000 ${env.IMAGE_TAG}"
+                sh "docker run -d -p ${env.PORT}:3000 --name ${env.CONTAINER_NAME} ${env.IMAGE_TAG}"
             }
         }
     }
