@@ -6,7 +6,7 @@ pipeline{
     }
     tools {
             nodejs "node"
-            docker 'docker-20.10.7'
+            dockerTool 'docker-20.10.7'
     }
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
