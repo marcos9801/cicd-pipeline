@@ -1,5 +1,6 @@
 pipeline{
     agent any
+    tools {nodejs "nodejs"}
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
         IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"
