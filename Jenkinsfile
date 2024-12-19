@@ -1,12 +1,7 @@
 pipeline{
-    agent {
-        docker{
-            image 'docker:latest'
-        }
-    }
+    agent any
     tools {
             nodejs "node"
-            dockerTool "docker"
     }
     environment {
         BRANCH_NAME = "${env.BRANCH_NAME}"
