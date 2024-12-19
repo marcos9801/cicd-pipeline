@@ -4,6 +4,7 @@ pipeline {
         nodejs "node"  // Nombre del Node.js configurado en Jenkins
     }
     environment {
+        CONTAINER_NAME="${env.BRANCH_NAME == 'main' ? 'nodemain' : 'nodedev'}" 
         IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"  // Imagen por defecto
         PORT = "${env.BRANCH_NAME == 'main' ? '3000' : '3001'}" // Puerto por defecto
     }
@@ -45,7 +46,7 @@ pipeline {
         }
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d -p ${env.PORT}:3000 --name my-app ${env.IMAGE_TAG}"
+                sh "docker run -d -p ${env.PORT}:3000 --name ${env.CONTAINER_NAME} ${env.IMAGE_TAG}"
             }
         }
     }
