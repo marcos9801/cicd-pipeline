@@ -31,7 +31,9 @@ pipeline{
         }
         stage('Build image'){
             steps{
-                docker.build "${IMAGE_TAG}"
+                script{
+                    docker.build "${IMAGE_TAG}"
+                }
             }
         }
         stage ('stop previous container'){
@@ -45,8 +47,9 @@ pipeline{
         }
         stage ('Run container'){
             steps{
-                docker.run "${IMAGE_TAG}"
-                sh "docker run -d -p ${PORT}:3000 ${IMAGE_TAG}"
+                script{
+                    docker.run "${IMAGE_TAG}"
+                }
             }
         }
     }    
