@@ -31,12 +31,13 @@ pipeline{
         }
         stage('Build image'){
             steps{
-                sh " docker build -t ${IMAGE_TAG} ."
+                docker.build "${IMAGE_TAG}"
             }
         }
         stage ('stop previous container'){
             steps{
                 sh """
+
                     docker ps -q --filter "ancestor=${IMAGE_TAG}" | xargs -r docker stop
                     docker ps -aq --filter "ancestor=${IMAGE_TAG}" | xargs -r docker rm
                 """
@@ -44,6 +45,7 @@ pipeline{
         }
         stage ('Run container'){
             steps{
+                docker.run "${IMAGE_TAG}"
                 sh "docker run -d -p ${PORT}:3000 ${IMAGE_TAG}"
             }
         }
