@@ -4,9 +4,8 @@ pipeline {
         nodejs "node"  // Nombre del Node.js configurado en Jenkins
     }
     environment {
-        BRANCH_NAME = "${env.BRANCH_NAME}"  // Nombre de la rama del SCM
-        IMAGE_TAG = "${params.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"  // Imagen por defecto
-        PORT = "${params.BRANCH == 'main' ? '3000' : '3001'}" // Puerto por defecto
+        IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'nodemain:v1.0' : 'nodedev:v1.0'}"  // Imagen por defecto
+        PORT = "${env.BRANCH_NAME == 'main' ? '3000' : '3001'}" // Puerto por defecto
     }
     stages {
         stage('Checkout') {
